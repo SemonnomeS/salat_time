@@ -1,8 +1,10 @@
 <template>
-    <Navbar />
-    <LayoutContainer>
-        <router-view></router-view>
-    </LayoutContainer>
+    <div class="flex flex-col h-screen">
+        <Navbar />
+        <LayoutContainer class="flex-grow">
+            <router-view></router-view>
+        </LayoutContainer>
+    </div>
 </template>
 
 <script setup lang="ts">
