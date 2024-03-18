@@ -8,6 +8,8 @@ import PrimeVue from "primevue/config";
 import Calendar from "primevue/calendar";
 import Dropdown from "primevue/dropdown";
 import Card from "primevue/card";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
 
 import "primevue/resources/themes/aura-light-green/theme.css";
 import "primevue/resources/primevue.min.css";
@@ -21,4 +23,6 @@ app.use(PrimeVue);
 app.component("Calendar", Calendar);
 app.component("Dropdown", Dropdown);
 app.component("Card", Card);
+app.component("DataTable", DataTable);
+app.component("Column", Column);
 app.mount("#app");
