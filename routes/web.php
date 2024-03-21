@@ -12,3 +12,5 @@ Route::get('/locations', [SalatTimeController::class, 'getLocations']);
 Route::get('/date-limits', [SalatTimeController::class, 'getMinMaxDate']);
 Route::get('/salat-time', [SalatTimeController::class, 'getSalatTime']);
 Route::get('/monthly-salat-time', [SalatTimeController::class, 'getMonthlySalatTime']);
+Route::get('/ramadanDates/{year}', [SalatTimeController::class, 'getRamadanDatesForYear']);
+Route::get('/ramadan-salat-time', [SalatTimeController::class, 'getRamadanSalatTimesForLocation']);

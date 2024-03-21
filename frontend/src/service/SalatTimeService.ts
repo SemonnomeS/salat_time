@@ -29,4 +29,13 @@ export default {
             },
         });
     },
+
+    getMRamadanSalatTime(date, location) {
+        return axios.get(`${BASE_URL}ramadan-salat-time`, {
+            params: {
+                date: moment(date).format("YYYY-MM-DD"),
+                location: location,
+            },
+        });
+    },
 };
