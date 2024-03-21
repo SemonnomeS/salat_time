@@ -84,34 +84,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
+import { useStore } from "vuex";
 import salatTimeService from "../service/SalatTimeService";
+
+const store = useStore();
 
 const date = ref();
 const selectedLocation = ref();
-const locations = ref([]);
-const minDate = ref(new Date());
-const maxDate = ref(new Date());
 const salatTimes = ref(null);
+
+// Computed properties to access store values
+const locations = computed(() => store.getters.locations);
+const minDate = computed(() => store.getters.minDate);
+const maxDate = computed(() => store.getters.maxDate);
 
 // Fetch locations and date limits when the component is mounted
 onMounted(async () => {
-    try {
-        const [locationsResponse, dateLimitsResponse] = await Promise.all([
-            salatTimeService.getLocations(),
-            salatTimeService.getDateLimits(),
-        ]);
-
-        // Update locations
-        locations.value = locationsResponse.data;
-
-        // Update date limits
-        const { min_date, max_date } = dateLimitsResponse.data;
-        minDate.value = new Date(min_date);
-        maxDate.value = new Date(max_date);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
+    // Dispatch the action to fetch locations and date limits
+    await store.dispatch("fetchLocationsAndDateLimits");
 });
 
 // Define a method to fetch salat times when date or location changes

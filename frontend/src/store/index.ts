@@ -1,12 +1,43 @@
 import { createStore } from "vuex";
+import salatTimeService from "../service/SalatTimeService";
 
-const store = createStore({
+export default createStore({
     state: {
-        test: "4534534",
+        locations: [],
+        minDate: null,
+        maxDate: null,
     },
-    getters: {},
-    actions: {},
-    mutations: {},
-});
+    getters: {
+        locations: (state) => state.locations,
+        minDate: (state) => state.minDate,
+        maxDate: (state) => state.maxDate,
+    },
+    actions: {
+        async fetchLocationsAndDateLimits({ commit }) {
+            try {
+                const [locationsResponse, dateLimitsResponse] =
+                    await Promise.all([
+                        salatTimeService.getLocations(),
+                        salatTimeService.getDateLimits(),
+                    ]);
 
-export default store;
+                commit("setLocations", locationsResponse.data);
+                commit("setMinDate", dateLimitsResponse.data.min_date);
+                commit("setMaxDate", dateLimitsResponse.data.max_date);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        },
+    },
+    mutations: {
+        setLocations(state, locations) {
+            state.locations = locations;
+        },
+        setMinDate(state, minDate) {
+            state.minDate = new Date(minDate);
+        },
+        setMaxDate(state, maxDate) {
+            state.maxDate = new Date(maxDate);
+        },
+    },
+});
