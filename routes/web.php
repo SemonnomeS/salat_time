@@ -9,5 +9,6 @@ Route::get('/', function () {
 
 
 Route::get('/locations', [SalatTimeController::class, 'getLocations']);
-Route::get('/date_limits', [SalatTimeController::class, 'getMinMaxDate']);
+Route::get('/date-limits', [SalatTimeController::class, 'getMinMaxDate']);
 Route::get('/salat-time', [SalatTimeController::class, 'getSalatTime']);
+Route::get('/monthly-salat-time', [SalatTimeController::class, 'getMonthlySalatTime']);

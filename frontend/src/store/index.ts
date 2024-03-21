@@ -13,7 +13,11 @@ export default createStore({
         maxDate: (state) => state.maxDate,
     },
     actions: {
-        async fetchLocationsAndDateLimits({ commit }) {
+        async fetchLocationsAndDateLimits({ state, commit }) {
+            // Check if state is already populated
+            if (state.locations.length > 0 && state.minDate && state.maxDate) {
+                return;
+            }
             try {
                 const [locationsResponse, dateLimitsResponse] =
                     await Promise.all([

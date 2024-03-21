@@ -108,10 +108,9 @@ onMounted(async () => {
 // Define a method to fetch salat times when date or location changes
 const fetchSalatTimes = async () => {
     if (date.value && selectedLocation.value) {
-        const isoDate = new Date(date.value).toISOString().split("T")[0];
         try {
             const response = await salatTimeService.getSalatTime(
-                isoDate,
+                date.value,
                 selectedLocation.value.name
             );
             salatTimes.value = response.data;

@@ -7,6 +7,8 @@
                 <label for="date" class="font-bold mb-1">Select Month</label>
                 <Calendar
                     id="date"
+                    :minDate="minDate"
+                    :maxDate="maxDate"
                     placeholder="Select month"
                     v-model="date"
                     view="month"
@@ -19,8 +21,8 @@
                 <label for="city" class="font-bold mb-1">Select City</label>
                 <Dropdown
                     id="city"
-                    v-model="selectedCity"
-                    :options="cities"
+                    v-model="selectedLocation"
+                    :options="locations"
                     optionLabel="name"
                     placeholder="Select a City"
                     class="md:w-14rem h-12"
@@ -62,26 +64,46 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { TestService } from "../service/TestService";
+import { ref, onMounted, watch, computed } from "vue";
+import { useStore } from "vuex";
+import salatTimeService from "../service/SalatTimeService";
+
+const store = useStore();
 
 const date = ref();
-const selectedCity = ref();
-
-const cities = ref([
-    { name: "New York", code: "NY" },
-    { name: "Rome", code: "RM" },
-    { name: "London", code: "LDN" },
-    { name: "Istanbul", code: "IST" },
-    { name: "Paris", code: "PRS" },
-]);
-
-onMounted(() => {
-    TestService.getSalatTimesData().then((data) => (times.value = data));
-});
-
+const selectedLocation = ref();
 const dt = ref();
 const times = ref();
+
+// Computed properties to access store values
+const locations = computed(() => store.getters.locations);
+const minDate = computed(() => store.getters.minDate);
+const maxDate = computed(() => store.getters.maxDate);
+
+// Fetch locations and date limits when the component is mounted
+onMounted(async () => {
+    // Dispatch the action to fetch locations and date limits
+    await store.dispatch("fetchLocationsAndDateLimits");
+});
+
+// Define a method to fetch monthly salat times when date or location changes
+const fetchSalatTimes = async () => {
+    if (date.value && selectedLocation.value) {
+        try {
+            const response = await salatTimeService.getMonthlySalatTime(
+                date.value,
+                selectedLocation.value.name
+            );
+            times.value = response.data;
+        } catch (error) {
+            console.error("Error fetching salat times:", error);
+        }
+    }
+};
+
+// Watch for changes in date or location and fetch salat times accordingly
+watch([date, selectedLocation], fetchSalatTimes, { immediate: true });
+
 const exportCSV = () => {
     dt.value.exportCSV();
 };

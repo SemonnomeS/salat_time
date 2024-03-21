@@ -50,4 +50,29 @@ class SalatTimeController extends Controller
             return response()->json(['error' => 'Salat times not found for the given date and location'], 404);
         }
     }
+
+    public function getMonthlySalatTime(Request $request)
+    {
+        $date = $request->input('date');
+        $locationName = $request->input('location');
+
+
+        // Calculate the first day and last day of the month
+        $firstDayOfMonth = date('Y-m-01', strtotime($date));
+        $lastDayOfMonth = date('Y-m-t', strtotime($date));
+
+        $salatTimes = DB::table('salat_times')
+            ->join('locations', 'salat_times.location_id', '=', 'locations.id')
+            ->where('salat_times.date', '>=', $firstDayOfMonth)
+            ->where('salat_times.date', '<=', $lastDayOfMonth)
+            ->where('locations.name', $locationName)
+            ->select('salat_times.*')
+            ->get();
+
+        if ($salatTimes->isNotEmpty()) {
+            return response()->json($salatTimes);
+        } else {
+            return response()->json(['error' => 'Salat times not found for the given month, year, and location'], 404);
+        }
+    }
 }
